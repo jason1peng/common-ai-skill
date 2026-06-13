@@ -1,72 +1,36 @@
 ---
 name: plan-quality
-description: "Improves implementation and delivery plans with a lightweight quality checklist focused on scope, review base, prerequisites, verification, isolation, validation, candidate completeness, and follow-up boundaries. Use when creating, reviewing, refining, or retrofitting a plan, especially when the user asks to write a plan, improve plan quality, prepare a delivery plan, or turn retro lessons into future planning guidance."
+description: "Improves implementation plans with a lightweight quality checklist focused on scope, review base, prerequisites, verification, isolation, validation, candidate completeness, follow-up boundaries, and post-execution learning. Use when creating, reviewing, refining, retrofitting, or learning from a plan, especially when the user asks to write a plan, improve plan quality, review a plan, or identify planning lessons after execution."
 ---
 
 # Plan Quality
 
-Use this skill when creating or reviewing an implementation/delivery plan. The goal is not to force a template; it is to make the plan clear enough that implementers, verifiers, and reviewers know what success means.
+Use this skill when creating, reviewing, refining, or learning from an implementation plan. The goal is not to force a template; it is to make the plan clear enough that implementers, verifiers, and reviewers know what success means.
+
+This skill is workflow-agnostic. Do not assume the user is using any specific delivery system, issue tracker, CI setup, or retrospective format.
 
 ## Quick workflow
 
 1. Read the request, repo context, and any existing plan.
-2. Add only checklist items that materially reduce ambiguity for this task.
-3. Keep the plan actionable: scope, evidence, and boundaries over generic prose.
-4. If something is unknown, mark it as an open question or assumption instead of guessing.
+2. Read `references/PLAN_QUALITY_CHECKLIST.md` as the baseline checklist.
+3. Add only checklist items that materially reduce ambiguity for this task.
+4. Keep the plan actionable: scope, evidence, and boundaries over generic prose.
+5. If something is unknown, mark it as an open question or assumption instead of guessing.
+6. After a plan is executed, reviewed, debugged, or abandoned, look for reusable planning lessons and provide improvement suggestions when helpful.
 
-## Starting checklist
+## Applying the checklist
 
-### Scope boundaries
+Use `references/PLAN_QUALITY_CHECKLIST.md` as the canonical checklist. Do not copy the whole checklist into every plan. Select only the items that matter for the current task.
 
-- What must change?
-- What must not change?
-- What compatibility or legacy behavior must be preserved?
-- What is explicitly follow-up or out of scope?
-- For cleanup, revert, or existing-MR work, what is the intended review base or net diff target?
-- Are there protected files or surfaces that must stay zero-diff versus that base?
+Common areas to consider:
 
-### Local prerequisites
-
-Include when local verification/setup is non-trivial.
-
-- Required profiles, feature flags, runtime modes, or services
-- Required environment variables or local secret/dummy values
-- Required generated assets, dependency install, or build setup
-- Known local boot blockers or setup quirks
-- If docs/config/devstack advertise an endpoint, port, profile, or run command, how will the plan prove that runtime mode actually starts the advertised behavior?
-
-### Acceptance and verification path
-
-- What observable behavior proves the change works?
-- What real consumer/user path should be exercised, not just internal state?
-- What focused tests or commands should run?
-- When is source-only or mock-only evidence sufficient, if ever?
-- For cleanup or preservation work, which surfaces need behavioral checks versus zero-diff preservation checks?
-
-### Test data, state, and isolation
-
-Use for scoped state, tenancy, sessions, caches, request context, feature flags, test IDs, or shared stores.
-
-- Which distinct scopes or identities should be tested?
-- Is an interleaved check needed to prove isolation?
-- Should missing/default/no-context behavior be verified?
-- What data must not leak across scopes?
-
-### Validation and error expectations
-
-Use for validation, endpoints, parsing, auth, or failure behavior.
-
-- Which invalid inputs must be tested?
-- Expected status code, error shape, or message when important
-- If any non-2xx failure is acceptable, say that explicitly
-- Which validation polish is follow-up rather than required now?
-
-### Candidate completeness expectations
-
-- Expected source/config/script/doc files to change or be added
-- Expected tests to change or be added
-- Generated/local files that should not be committed
-- Any intentionally untracked files and why
+- Scope boundaries
+- Local prerequisites
+- Acceptance and verification path
+- Test data, state, and isolation
+- Validation and error expectations
+- Candidate completeness expectations
+- Post-execution learning
 
 ## Plan review output
 
@@ -78,3 +42,34 @@ When reviewing a plan, respond with:
 - Items safe to defer
 
 Avoid expanding the plan with boilerplate. Prefer short, task-specific bullets that an implementer and verifier can execute.
+
+## Post-execution improvement feedback
+
+When plan execution, implementation, review, debugging, or user feedback reveals a planning gap, include an optional section:
+
+```md
+## Plan quality improvement suggestions
+
+- Classification: shared-skill candidate | repo-specific guidance | task-specific note only
+- Checklist area: scope | prerequisites | verification | isolation | validation | completeness | follow-up boundaries | post-execution learning
+- Suggested addition: <concise checklist wording>
+- Why it generalizes: <one sentence>
+- Example future-plan wording: <optional>
+```
+
+Only include suggestions that would have materially improved the plan. Do not invent process changes just to fill this section.
+
+## Updating the checklist
+
+Do not assume the skill repository is writable. Many users may install this skill from a shared or read-only source.
+
+If the user asks to improve the skill and the repo is writable, edit `references/PLAN_QUALITY_CHECKLIST.md` and keep `SKILL.md` focused on workflow instructions.
+
+If the repo is not writable or the user did not ask for edits, provide one of these instead:
+
+- PR-ready checklist wording
+- an issue/comment draft for the skill owner
+- a local patch the user can apply to their own clone or fork
+- repo-specific guidance for that project's docs or agent instructions
+
+Prefer improving the shared checklist only for lessons that are broadly reusable across repositories and workflows. Keep repo-specific rules in that repo's own docs, and keep one-off notes in the plan or retrospective.
