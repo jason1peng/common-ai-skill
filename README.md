@@ -6,13 +6,14 @@ Shared source-of-truth repository for reusable AI/pi skills.
 
 - `repo-documentation-harness/` - reusable documentation harness skill for creating `docs/index.md`, `docs/principles.md`, and root AI instruction links.
 
-## Local pi Link
+## Local pi Setup
 
-Pi loads user-scope skills from `~/.pi/agent/skills/`. Link skills from this repo instead of copying them:
+Pi can load a shared skill library from settings. Add this repo to `~/.pi/agent/settings.json`:
 
-```bash
-ln -s ~/ai/common-ai-skill/repo-documentation-harness \
-  ~/.pi/agent/skills/repo-documentation-harness
+```json
+{
+  "skills": ["~/ai/common-ai-skill"]
+}
 ```
 
-This keeps `~/ai/common-ai-skill` as the single source of truth.
+With this setup, every skill directory under this repo that contains `SKILL.md` is discovered automatically. Do not create per-skill copies or symlinks; `~/ai/common-ai-skill` remains the single source of truth.
