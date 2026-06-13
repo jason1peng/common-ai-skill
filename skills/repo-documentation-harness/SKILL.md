@@ -1,6 +1,6 @@
 ---
 name: repo-documentation-harness
-description: Create or improve a repository documentation harness: docs/index.md as the documentation entry point, docs/principles.md as the repo-wide change principles SSOT, and root AI instruction files such as AGENTS.md, CLAUDE.md, GEMINI.md, or README guidance. Use when standardizing docs, onboarding future agent sessions, or improving cross-repo change standards.
+description: "Create or improve a repository documentation harness: docs/index.md as the documentation entry point, docs/principles.md as the repo-wide change principles SSOT, and root AI instruction files such as AGENTS.md, CLAUDE.md, GEMINI.md, or README guidance. Use when standardizing docs, onboarding future agent sessions, or improving cross-repo change standards."
 ---
 
 # Repository Documentation Harness
