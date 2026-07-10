@@ -2,6 +2,13 @@
 
 Use this lightweight checklist when writing, reviewing, or learning from an implementation plan. It is not a full plan template; include only the sections that materially reduce ambiguity for the task. However, every final plan must end with a task-specific execution checklist as described in section 9.
 
+## Proportionality
+
+- For one cohesive change, do not assign a phase or task identifier, restate `Depends on: none`, or invent implicit prerequisites, outputs, handoffs, waves, or join gates.
+- For a single-unit plan, one short parallelization decision and two to four outcome-focused checklist items are usually enough.
+- Use the full phase, dependency, output, handoff, wave, and join-gate structure only when work has genuinely independent execution units.
+- Create one checkbox per independently verifiable outcome or gate, not per file edit or trivial mechanical step.
+
 ## 1. Scope boundaries
 
 - What must change?

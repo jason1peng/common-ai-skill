@@ -37,6 +37,10 @@ Common areas to consider:
 - Parallel execution safety and integration
 - Post-execution learning
 
+## Proportionality
+
+Scale the plan to the task using the proportionality guidance in the canonical checklist. For one cohesive change, do not assign a phase or task identifier, restate `Depends on: none`, or add implicit prerequisites, handoffs, waves, or join gates. A single-unit plan still needs the required parallelization decision and execution checklist, but one short decision and two to four outcome-focused checkboxes are usually enough. Reserve full phase, dependency, output, handoff, wave, and join-gate structure for genuinely independent execution units.
+
 ## Final plan output contract
 
 Every final plan must satisfy these requirements:
@@ -45,6 +49,21 @@ Every final plan must satisfy these requirements:
 - Include an explicit `Parallelization` decision. Name the tasks or waves that can run concurrently and why, or state that execution should remain sequential and why.
 - Apply the dependency, handoff, parallel-safety, isolation, join, and post-integration criteria in checklist sections 7 and 8.
 - End with an `Execution checklist` section, or a clearly equivalent heading. Build its task-specific, observable checkboxes from checklist section 9; do not copy the canonical checklist wholesale. This is required even for a short or single-phase plan.
+
+A concise single-unit shape is:
+
+```md
+## Change
+- Scope: <one cohesive change and its boundaries>
+- Done when: <observable evidence>
+
+## Parallelization
+- Sequential: <why splitting the change provides no benefit>.
+
+## Execution checklist
+- [ ] <complete the outcome>
+- [ ] <verify the outcome and diff boundaries>
+```
 
 A concise multi-phase shape is:
 
