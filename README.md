@@ -5,7 +5,7 @@ Shared source-of-truth repository for reusable AI/pi skills.
 ## Skills
 
 - `skills/repo-documentation-harness/` - reusable documentation harness skill for creating `docs/index.md`, `docs/principles.md`, and root AI instruction links.
-- `skills/plan-quality/` - lightweight plan creation/review checklist for scope boundaries, prerequisites, verification, isolation, validation, completeness, and follow-up boundaries.
+- `skills/plan-quality/` - plan creation/review guidance with a required execution checklist, phase dependencies, parallelization decisions, verification, and scope boundaries.
 
 ## Local pi Setup
 
