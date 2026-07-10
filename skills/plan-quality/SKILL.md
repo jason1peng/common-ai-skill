@@ -1,11 +1,11 @@
 ---
 name: plan-quality
-description: "Improves implementation plans with a lightweight quality checklist focused on scope, review base, prerequisites, verification, isolation, validation, candidate completeness, follow-up boundaries, and post-execution learning. Use when creating, reviewing, refining, retrofitting, or learning from a plan, especially when the user asks to write a plan, improve plan quality, review a plan, or identify planning lessons after execution."
+description: "Improves implementation plans with a required task-specific execution checklist, explicit phase dependencies, and parallelization decisions, plus guidance for scope, prerequisites, verification, isolation, validation, completeness, and post-execution learning. Use when creating, reviewing, refining, retrofitting, or learning from a plan, especially when the user asks to write a plan, improve plan quality, review a plan, or identify planning lessons after execution."
 ---
 
 # Plan Quality
 
-Use this skill when creating, reviewing, refining, or learning from an implementation plan. The goal is not to force a template; it is to make the plan clear enough that implementers, verifiers, and reviewers know what success means.
+Use this skill when creating, reviewing, refining, or learning from an implementation plan. The goal is not to force a full template; it is to make the plan clear enough that implementers, verifiers, and reviewers know what to do, what can run concurrently, and what success means. Every final plan must include a task-specific execution checklist.
 
 This skill is workflow-agnostic. Do not assume the user is using any specific delivery system, issue tracker, CI setup, or retrospective format.
 
@@ -13,10 +13,13 @@ This skill is workflow-agnostic. Do not assume the user is using any specific de
 
 1. Read the request, repo context, and any existing plan.
 2. Read `references/PLAN_QUALITY_CHECKLIST.md` as the baseline checklist.
-3. Add only checklist items that materially reduce ambiguity for this task.
-4. Keep the plan actionable: scope, evidence, and boundaries over generic prose.
-5. If something is unknown, mark it as an open question or assumption instead of guessing.
-6. After a plan is executed, reviewed, debugged, or abandoned, look for reusable planning lessons and provide improvement suggestions when helpful.
+3. Identify the implementation units, dependencies, handoffs, and completion gates.
+4. Decide explicitly which units can run in parallel and which must stay sequential.
+5. Add only checklist items that materially reduce ambiguity for this task.
+6. Keep the plan actionable: scope, evidence, execution order, and boundaries over generic prose.
+7. End the final plan with a task-specific execution checklist.
+8. If something is unknown, classify it instead of guessing: make decisions required before execution explicit blockers, and record non-blocking assumptions or follow-ups separately.
+9. After a plan is executed, reviewed, debugged, or abandoned, look for reusable planning lessons and provide improvement suggestions when helpful.
 
 ## Applying the checklist
 
@@ -30,13 +33,70 @@ Common areas to consider:
 - Test data, state, and isolation
 - Validation and error expectations
 - Candidate completeness expectations
+- Phase dependencies, handoffs, and completion gates
+- Parallel execution safety and integration
 - Post-execution learning
+
+## Final plan output contract
+
+Every final plan must satisfy these requirements:
+
+- If the work has multiple execution steps, give phases or tasks stable identifiers and state each unit's scope, dependencies, expected output, and completion evidence.
+- Include an explicit `Parallelization` decision. Name the tasks or waves that can run concurrently and why, or state that execution should remain sequential and why.
+- Apply the dependency, handoff, parallel-safety, isolation, join, and post-integration criteria in checklist sections 7 and 8.
+- End with an `Execution checklist` section, or a clearly equivalent heading. Build its task-specific, observable checkboxes from checklist section 9; do not copy the canonical checklist wholesale. This is required even for a short or single-phase plan.
+
+A concise multi-phase shape is:
+
+```md
+## Phases
+
+### P1: <goal>
+- Depends on: none
+- Changes: <files or surfaces>
+- Produces: <artifact or evidence consumed by P3>
+- Done when: <observable evidence>
+
+### P2: <goal>
+- Depends on: none
+- Changes: <independent files or surfaces>
+- Produces: <artifact or evidence consumed by P3>
+- Done when: <observable evidence>
+
+### P3: <integration goal>
+- Depends on: P1, P2
+- Starts when: both prerequisite completion gates pass
+- Consumes: <P1 output> and <P2 output>
+- Changes: <integration surfaces>
+- Done when: <combined evidence>
+
+## Parallelization
+- Wave 1: P1 and P2 can run in parallel because <independent boundaries>.
+- Wave 2: P3 starts after both; it remains blocked if either completion gate fails.
+
+## Execution checklist
+
+### Wave 1 — parallel
+- [ ] P1: <implementation, output, and completion evidence>
+- [ ] P2: <implementation, output, and completion evidence>
+
+### Join gate
+- [ ] Confirm P1 and P2 outputs exist and both completion gates pass.
+
+### Wave 2 — after the join gate
+- [ ] P3: consume both outputs and complete integration and final verification.
+```
+
+Adapt the structure to the task; preserve the required decisions and checklist rather than the exact headings.
 
 ## Plan review output
 
 When reviewing a plan, respond with:
 
 - Missing or ambiguous checklist items that matter now
+- Missing dependencies, handoffs, or completion gates
+- Unsafe or overlooked parallelization assumptions
+- Whether the execution checklist can be followed without inventing decisions
 - Suggested concise additions to the plan
 - Open questions that require user/product judgment
 - Items safe to defer
@@ -51,7 +111,7 @@ When plan execution, implementation, review, debugging, or user feedback reveals
 ## Plan quality improvement suggestions
 
 - Classification: shared-skill candidate | repo-specific guidance | task-specific note only
-- Checklist area: scope | prerequisites | verification | isolation | validation | completeness | follow-up boundaries | post-execution learning
+- Checklist area: scope | prerequisites | verification | isolation | validation | completeness | phase execution | parallelization | integration | follow-up boundaries | post-execution learning
 - Suggested addition: <concise checklist wording>
 - Why it generalizes: <one sentence>
 - Example future-plan wording: <optional>
