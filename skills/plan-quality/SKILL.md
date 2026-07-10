@@ -39,7 +39,7 @@ Common areas to consider:
 
 ## Proportionality
 
-Scale the plan to the task using the proportionality guidance in the canonical checklist. For one cohesive change, do not assign a phase or task identifier, restate `Depends on: none`, or add implicit prerequisites, handoffs, waves, or join gates. A single-unit plan still needs the required parallelization decision and execution checklist, but one short decision and two to four outcome-focused checkboxes are usually enough. Reserve full phase, dependency, output, handoff, wave, and join-gate structure for genuinely independent execution units.
+Scale the plan to the task using the proportionality guidance in the canonical checklist. For one cohesive change, do not assign a phase or task identifier, restate `Depends on: none`, or add implicit prerequisites, handoffs, waves, or join gates. A single-unit plan still needs the required parallelization decision and execution checklist, but one phase-level checkbox is usually enough. Reserve full phase, dependency, output, handoff, wave, and join-gate structure for genuinely independent execution units. Do not split a phase into checkbox-sized work items; keep implementation choices inside the phase flexible unless an ordering constraint or completion gate materially requires more structure.
 
 ## Final plan output contract
 
@@ -48,7 +48,7 @@ Every final plan must satisfy these requirements:
 - If the work has multiple execution steps, give phases or tasks stable identifiers and state each unit's scope, dependencies, expected output, and completion evidence.
 - Include an explicit `Parallelization` decision. Name the tasks or waves that can run concurrently and why, or state that execution should remain sequential and why.
 - Apply the dependency, handoff, parallel-safety, isolation, join, and post-integration criteria in checklist sections 7 and 8.
-- End with an `Execution checklist` section, or a clearly equivalent heading. Build its task-specific, observable checkboxes from checklist section 9; do not copy the canonical checklist wholesale. This is required even for a short or single-phase plan.
+- End with an `Execution checklist` section, or a clearly equivalent heading. Include one task-specific, observable checkbox per phase (or one checkbox for a cohesive single-unit change), using checklist section 9; do not create checkboxes for individual work items within a phase or copy the canonical checklist wholesale. This is required even for a short or single-phase plan.
 
 A concise single-unit shape is:
 
@@ -61,8 +61,7 @@ A concise single-unit shape is:
 - Sequential: <why splitting the change provides no benefit>.
 
 ## Execution checklist
-- [ ] <complete the outcome>
-- [ ] <verify the outcome and diff boundaries>
+- [ ] Complete the change, including its verification and diff-boundary checks.
 ```
 
 A concise multi-phase shape is:
@@ -96,14 +95,11 @@ A concise multi-phase shape is:
 ## Execution checklist
 
 ### Wave 1 — parallel
-- [ ] P1: <implementation, output, and completion evidence>
-- [ ] P2: <implementation, output, and completion evidence>
+- [ ] P1: complete the phase and satisfy its completion gate.
+- [ ] P2: complete the phase and satisfy its completion gate.
 
-### Join gate
-- [ ] Confirm P1 and P2 outputs exist and both completion gates pass.
-
-### Wave 2 — after the join gate
-- [ ] P3: consume both outputs and complete integration and final verification.
+### Wave 2 — after the P1/P2 join gate
+- [ ] P3: consume both outputs, complete integration, and run final verification.
 ```
 
 Adapt the structure to the task; preserve the required decisions and checklist rather than the exact headings.

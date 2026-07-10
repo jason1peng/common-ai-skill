@@ -5,9 +5,10 @@ Use this lightweight checklist when writing, reviewing, or learning from an impl
 ## Proportionality
 
 - For one cohesive change, do not assign a phase or task identifier, restate `Depends on: none`, or invent implicit prerequisites, outputs, handoffs, waves, or join gates.
-- For a single-unit plan, one short parallelization decision and two to four outcome-focused checklist items are usually enough.
+- For a single-unit plan, one short parallelization decision and one phase-level checklist item are usually enough.
 - Use the full phase, dependency, output, handoff, wave, and join-gate structure only when work has genuinely independent execution units.
-- Create one checkbox per independently verifiable outcome or gate, not per file edit or trivial mechanical step.
+- Create one checkbox per phase, or one checkbox for the whole change when it does not need named phases. Keep work items, verification details, and completion evidence in the phase description rather than turning them into separate checkboxes.
+- Do not decompose work merely to create more checkboxes; over-specifying work items can unnecessarily constrain implementation choices.
 
 ## 1. Scope boundaries
 
@@ -89,12 +90,12 @@ Do not label tasks parallel merely because they are conceptually different. Para
 
 Every final plan must end with an `Execution checklist` section, or a clearly equivalent heading. The checklist is required even for a short or single-phase plan.
 
-- Use task-specific, actionable checkboxes rather than copying this canonical checklist.
-- Order items by execution dependency; reference phase or task identifiers when present.
-- Include implementation completion and its observable evidence for every phase.
-- Include prerequisite decisions, handoffs, and join gates where they can block later work.
+- Use one task-specific, actionable checkbox per phase rather than copying this canonical checklist or creating a checkbox for every work item.
+- For a cohesive change without named phases, use one checkbox covering the change.
+- Order phase checkboxes by execution dependency and reference phase identifiers when present.
+- Keep implementation details, observable evidence, verification, cleanup, and documentation expectations in each phase definition; summarize them in the phase checkbox without decomposing them into additional checklist items.
+- Describe prerequisite decisions, handoffs, and join gates in the relevant phase definitions or wave headings. Create another checkbox only when they constitute a distinct phase.
 - Represent parallel waves and their integration point, or explicitly record that execution is sequential.
-- Include focused verification, final combined validation, and required cleanup or documentation updates.
 - Turn unresolved decisions required before execution into explicit blockers instead of leaving implementers to guess; record non-blocking assumptions or follow-ups separately.
 
 ## 10. Post-execution learning
