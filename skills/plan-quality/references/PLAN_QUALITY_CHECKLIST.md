@@ -6,7 +6,9 @@ Use this lightweight checklist when writing, reviewing, or learning from an impl
 
 - For one cohesive change, do not assign a phase or task identifier, restate `Depends on: none`, or invent implicit prerequisites, outputs, handoffs, waves, or join gates.
 - For a single-unit plan, one short parallelization decision and one phase-level checklist item are usually enough.
-- Use the full phase, dependency, output, handoff, wave, and join-gate structure only when work has genuinely independent execution units.
+- Use the full phase, dependency, output, handoff, wave, and join-gate structure only when work has genuinely independent execution units or distinct acceptance gates.
+- If one writer will complete implementation steps sequentially, keep those steps as bullets within one cohesive change instead of turning each step into a phase.
+- Create a separate phase only when the work can proceed independently or when its result must pass a distinct review or validation gate before downstream work can continue. If failure would not stop or replan downstream work, it is an implementation step rather than an acceptance gate.
 - Create one checkbox per phase, or one checkbox for the whole change when it does not need named phases. Keep work items, verification details, and completion evidence in the phase description rather than turning them into separate checkboxes.
 - Do not decompose work merely to create more checkboxes; over-specifying work items can unnecessarily constrain implementation choices.
 
