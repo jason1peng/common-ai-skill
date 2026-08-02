@@ -15,11 +15,12 @@ This skill is workflow-agnostic. Do not assume the user is using any specific de
 2. Read `references/PLAN_QUALITY_CHECKLIST.md` as the baseline checklist.
 3. Identify the implementation units, dependencies, handoffs, and completion gates.
 4. Decide explicitly which units can run in parallel and which must stay sequential.
-5. Add only checklist items that materially reduce ambiguity for this task.
-6. Keep the plan actionable: scope, evidence, execution order, and boundaries over generic prose.
-7. End the final plan with a task-specific execution checklist.
-8. If something is unknown, classify it instead of guessing: make decisions required before execution explicit blockers, and record non-blocking assumptions or follow-ups separately.
-9. After a plan is executed, reviewed, debugged, or abandoned, look for reusable planning lessons and provide improvement suggestions when helpful.
+5. Challenge the phase count: apply the phase justification test in the canonical checklist to every proposed phase and merge any phase that fails it. For multi-phase plans, record the passing criterion (a/b/c/d) on each phase so the decision is observable, not just performed.
+6. Add only checklist items that materially reduce ambiguity for this task.
+7. Keep the plan actionable: scope, evidence, execution order, and boundaries over generic prose.
+8. End the final plan with a task-specific execution checklist.
+9. If something is unknown, classify it instead of guessing: make decisions required before execution explicit blockers, and record non-blocking assumptions or follow-ups separately.
+10. After a plan is executed, reviewed, debugged, or abandoned, look for reusable planning lessons and provide improvement suggestions when helpful.
 
 ## Applying the checklist
 
@@ -39,13 +40,14 @@ Common areas to consider:
 
 ## Proportionality
 
-Scale the plan to the task using the proportionality guidance in the canonical checklist. For one cohesive change, do not assign a phase or task identifier, restate `Depends on: none`, or add implicit prerequisites, handoffs, waves, or join gates. A single-unit plan still needs the required parallelization decision and execution checklist, but one phase-level checkbox is usually enough. Reserve full phase, dependency, output, handoff, wave, and join-gate structure for genuinely independent execution units or distinct acceptance gates. If one writer will complete implementation steps sequentially, keep those steps as bullets within one cohesive change instead of turning each step into a phase. A separate acceptance phase is justified only when its result must pass a distinct review or validation gate before downstream work can continue, and failure would stop or replan that work. Do not split a phase into checkbox-sized work items; keep implementation choices inside the phase flexible unless an ordering constraint or completion gate materially requires more structure.
+Scale the plan to the task using the proportionality guidance in the canonical checklist, including its phase justification test, anti-patterns, and merge self-check. Start from one cohesive change and default to the fewest phases that preserve independent execution units and distinct acceptance gates; the burden of proof is on each added phase, not on merging.
 
 ## Final plan output contract
 
 Every final plan must satisfy these requirements:
 
 - If the work has multiple execution steps, give phases or tasks stable identifiers and state each unit's scope, dependencies, expected output, and completion evidence.
+- For each proposed phase, record which phase-justification criterion (a/b/c/d in the canonical checklist) it passes; a phase that passes none must be merged before the plan is finalized. A single-unit change needs no justification line.
 - Include an explicit `Parallelization` decision. Name the tasks or waves that can run concurrently and why, or state that execution should remain sequential and why.
 - Apply the dependency, handoff, parallel-safety, isolation, join, and post-integration criteria in checklist sections 7 and 8.
 - End with an `Execution checklist` section, or a clearly equivalent heading. Include one task-specific, observable checkbox per phase (or one checkbox for a cohesive single-unit change), using checklist section 9; do not create checkboxes for individual work items within a phase or copy the canonical checklist wholesale. This is required even for a short or single-phase plan.
@@ -71,18 +73,21 @@ A concise multi-phase shape is:
 
 ### P1: <goal>
 - Depends on: none
+- Justification: <which of a/b/c/d holds>
 - Changes: <files or surfaces>
 - Produces: <artifact or evidence consumed by P3>
 - Done when: <observable evidence>
 
 ### P2: <goal>
 - Depends on: none
+- Justification: <which of a/b/c/d holds>
 - Changes: <independent files or surfaces>
 - Produces: <artifact or evidence consumed by P3>
 - Done when: <observable evidence>
 
 ### P3: <integration goal>
 - Depends on: P1, P2
+- Justification: <which of a/b/c/d holds>
 - Starts when: both prerequisite completion gates pass
 - Consumes: <P1 output> and <P2 output>
 - Changes: <integration surfaces>
@@ -109,6 +114,7 @@ Adapt the structure to the task; preserve the required decisions and checklist r
 When reviewing a plan, respond with:
 
 - Missing or ambiguous checklist items that matter now
+- Phases that fail the justification test and should be merged, with the merge target
 - Missing dependencies, handoffs, or completion gates
 - Unsafe or overlooked parallelization assumptions
 - Whether the execution checklist can be followed without inventing decisions

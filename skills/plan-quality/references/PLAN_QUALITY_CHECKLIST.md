@@ -4,13 +4,31 @@ Use this lightweight checklist when writing, reviewing, or learning from an impl
 
 ## Proportionality
 
+- Start from one cohesive change; split into phases only when a proposed phase passes the phase justification test below. The burden of proof is on each added phase, not on merging.
 - For one cohesive change, do not assign a phase or task identifier, restate `Depends on: none`, or invent implicit prerequisites, outputs, handoffs, waves, or join gates.
 - For a single-unit plan, one short parallelization decision and one phase-level checklist item are usually enough.
-- Use the full phase, dependency, output, handoff, wave, and join-gate structure only when work has genuinely independent execution units or distinct acceptance gates.
-- If one writer will complete implementation steps sequentially, keep those steps as bullets within one cohesive change instead of turning each step into a phase.
-- Create a separate phase only when the work can proceed independently or when its result must pass a distinct review or validation gate before downstream work can continue. If failure would not stop or replan downstream work, it is an implementation step rather than an acceptance gate.
-- Create one checkbox per phase, or one checkbox for the whole change when it does not need named phases. Keep work items, verification details, and completion evidence in the phase description rather than turning them into separate checkboxes.
-- Do not decompose work merely to create more checkboxes; over-specifying work items can unnecessarily constrain implementation choices.
+- Do not decompose work merely to create more phases or checkboxes; over-specifying work items can unnecessarily constrain implementation choices.
+
+### Phase justification test
+
+A phase earns its place only if at least one holds:
+
+- (a) It can execute concurrently with another unit.
+- (b) Its result must pass a distinct review or validation gate before downstream work can continue, and failure would stop or replan that work.
+- (c) It crosses a hard boundary: different writer, worktree, owner, or an explicit handoff artifact.
+- (d) It is a separately verifiable, separately reversible step in an ordered migration or deploy sequence, with a distinct failure-and-recovery mode from its neighbors.
+
+If none holds, merge the phase into an adjacent phase as implementation bullets. The test applies only when more than one phase is proposed; a single-unit change needs no justification. For multi-phase plans, record the passing criterion on each phase so the decision is observable.
+
+Anti-patterns to merge on sight:
+
+- Phase per file, layer, or component.
+- Phase per activity type: implementation, testing, and documentation as separate phases.
+- Phase per checklist section.
+- Verification-only phases that are just "run the tests".
+- Sequential same-writer phases with no gate or handoff between them.
+
+Before finalizing, ask for each phase: what is lost if it merges into its neighbor? If nothing about execution order, independence, gating, or failure recovery is lost, merge it.
 
 ## 1. Scope boundaries
 
@@ -69,7 +87,7 @@ Use when the change adds or modifies input validation, endpoint status codes, pa
 Use when the work has more than one execution unit.
 
 - Give each phase or task a stable identifier.
-- For each unit, state its goal, change surfaces, prerequisites, expected output, and observable completion evidence.
+- For each unit, state its goal, change surfaces, prerequisites, expected output, observable completion evidence, and which phase-justification criterion (a/b/c/d) it passes.
 - Which units can start immediately, and which are blocked by dependencies?
 - What exact artifact, decision, or evidence is handed to each dependent unit?
 - Where are the join points, integration step, and final end-to-end verification?
@@ -93,6 +111,7 @@ Do not label tasks parallel merely because they are conceptually different. Para
 Every final plan must end with an `Execution checklist` section, or a clearly equivalent heading. The checklist is required even for a short or single-phase plan.
 
 - Use one task-specific, actionable checkbox per phase rather than copying this canonical checklist or creating a checkbox for every work item.
+- Each phase checkbox must correspond to a phase that passed the justification test in `## Proportionality`; a phase that fails the test is merged into an adjacent phase as implementation bullets and gets no separate checkbox.
 - For a cohesive change without named phases, use one checkbox covering the change.
 - Order phase checkboxes by execution dependency and reference phase identifiers when present.
 - Keep implementation details, observable evidence, verification, cleanup, and documentation expectations in each phase definition; summarize them in the phase checkbox without decomposing them into additional checklist items.
