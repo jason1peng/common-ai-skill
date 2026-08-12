@@ -16,11 +16,12 @@ This skill is workflow-agnostic. Do not assume the user is using any specific de
 3. Identify the implementation units, dependencies, handoffs, and completion gates.
 4. Decide explicitly which units can run in parallel and which must stay sequential.
 5. Challenge the phase count: apply the phase justification test in the canonical checklist to every proposed phase and merge any phase that fails it. For multi-phase plans, record the passing criterion (a/b/c/d) on each phase so the decision is observable, not just performed.
-6. Add only checklist items that materially reduce ambiguity for this task.
-7. Keep the plan actionable: scope, evidence, execution order, and boundaries over generic prose.
-8. End the final plan with a task-specific execution checklist.
-9. If something is unknown, classify it instead of guessing: make decisions required before execution explicit blockers, and record non-blocking assumptions or follow-ups separately.
-10. After a plan is executed, reviewed, debugged, or abandoned, look for reusable planning lessons and provide improvement suggestions when helpful.
+6. Apply the scope justification test in the canonical checklist to every plan. When the user explicitly asks to simplify, collapse, reduce, or trim it, actively strip speculative future-proofing, unrequested optional edge cases, and phases or sections that exist only to host them. Rebuild from the current accepted contract; do not remove explicitly requested or previously approved behavior. Note removals and ask rather than guess if approval is unclear.
+7. Add only checklist items that materially reduce ambiguity for this task.
+8. Keep the plan actionable: scope, evidence, execution order, and boundaries over generic prose.
+9. End the final plan with a task-specific execution checklist.
+10. If something is unknown, classify it instead of guessing: make decisions required before execution explicit blockers, and record non-blocking assumptions or follow-ups separately.
+11. After a plan is executed, reviewed, debugged, or abandoned, look for reusable planning lessons and provide improvement suggestions when helpful.
 
 ## Applying the checklist
 
@@ -29,6 +30,7 @@ Use `references/PLAN_QUALITY_CHECKLIST.md` as the canonical checklist. Do not co
 Common areas to consider:
 
 - Scope boundaries
+- Simplicity and accepted-scope discipline
 - Local prerequisites
 - Acceptance and verification path
 - Test data, state, and isolation
@@ -40,7 +42,7 @@ Common areas to consider:
 
 ## Proportionality
 
-Scale the plan to the task using the proportionality guidance in the canonical checklist, including its phase justification test, anti-patterns, and merge self-check. Start from one cohesive change and default to the fewest phases that preserve independent execution units and distinct acceptance gates; the burden of proof is on each added phase, not on merging.
+Scale the plan to the task using the proportionality guidance in the canonical checklist, including its phase and scope justification tests, anti-patterns, and merge self-check. Start from one cohesive change and default to the fewest phases that preserve independent execution units and distinct acceptance gates; the burden of proof is on each added phase, not on merging. Apply the same burden of proof to retained features, edge cases, and future-proofing. When the user asks to simplify, use the scope test's removal and disclosure rule while preserving the current accepted requirements; later explicit decisions supersede conflicting earlier draft text.
 
 ## Final plan output contract
 
@@ -120,6 +122,7 @@ When reviewing a plan, respond with:
 - Whether the execution checklist can be followed without inventing decisions
 - Suggested concise additions to the plan
 - Open questions that require user/product judgment
+- Scope that should be cut because it was never requested or approved, versus scope that must stay because it was explicitly requested or previously approved
 - Items safe to defer
 
 Avoid expanding the plan with boilerplate. Prefer short, task-specific bullets that an implementer and verifier can execute.
