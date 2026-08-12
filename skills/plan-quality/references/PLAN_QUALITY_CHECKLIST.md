@@ -20,6 +20,26 @@ A phase earns its place only if at least one holds:
 
 If none holds, merge the phase into an adjacent phase as implementation bullets. The test applies only when more than one phase is proposed; a single-unit change needs no justification. For multi-phase plans, record the passing criterion on each phase so the decision is observable.
 
+### Scope justification test
+
+Apply this test to every feature, capability, edge case, configuration option, or extensibility hook in the plan, not just to phase count. An item earns a place in the plan only if at least one holds:
+
+- (a) The user explicitly requested it in this task or an earlier turn of the conversation.
+- (b) It is a previously approved requirement or feature in an authoritative spec, review, or accepted plan.
+- (c) It is required for correctness, safety, or a stated constraint of the chosen approach, rather than merely convenient or robust in general. For example, a generic retry/backoff layer is not required unless the chosen approach's contract specifies retry semantics.
+- (d) It is unavoidable given the approach already selected, such as a migration step required for the change to work at all.
+
+If none holds, remove it or record it as deferred. When the user asks to simplify, reduce, or trim a plan, treat that request as a directive to strip speculative future-proofing, unrequested optional edge cases, and hypothetical abstractions; it is not permission to drop explicitly requested or previously approved behavior. An earlier draft counts as approved only when the user or another authoritative decision explicitly accepted it; repetition in a draft does not promote planner-added scope into a requirement. If a later explicit decision conflicts with earlier draft text, the later decision wins and the stale text must be removed or rewritten, not merged. If approval is unclear, ask rather than guessing, and disclose what was removed.
+
+Anti-patterns to remove on sight when simplifying:
+
+- Speculative extensibility hooks ("in case we need X later")
+- Optional or nice-to-have edge cases not in the acceptance criteria and not requested
+- Configuration flags, feature toggles, or abstraction layers added for hypothetical future use
+- Phases or sections that exist only to host the above; merge or delete them after applying the phase justification test
+
+Example: remove an interface added only for hypothetical future backends, but retain a specifically approved current backend behavior.
+
 Anti-patterns to merge on sight:
 
 - Phase per file, layer, or component.
@@ -36,6 +56,7 @@ Before finalizing, ask for each phase: what is lost if it merges into its neighb
 - What must not change?
 - What compatibility or legacy behavior must be preserved?
 - What is explicitly follow-up or out of scope?
+- If the user asked to simplify, reduce, or trim the plan, does every remaining feature, edge case, and phase pass the scope justification test? List anything removed for that reason.
 - For cleanup, revert, or existing-review work, what is the intended review base or net diff target?
 - Are there protected files or surfaces that must stay zero-diff versus that base?
 
