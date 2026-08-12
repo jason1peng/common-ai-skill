@@ -1,159 +1,125 @@
 ---
 name: plan-quality
-description: "Improves implementation plans with a required task-specific execution checklist, explicit phase dependencies, and parallelization decisions, plus guidance for scope, prerequisites, verification, isolation, validation, completeness, and post-execution learning. Use when creating, reviewing, refining, retrofitting, or learning from a plan, especially when the user asks to write a plan, improve plan quality, review a plan, or identify planning lessons after execution."
+description: "Keeps implementation plans small and executable: one cohesive change by default, extra phases only when they earn it, plus a task-specific execution checklist and guidance for scope, prerequisites, verification, isolation, validation, and post-execution learning. Use when creating, reviewing, refining, retrofitting, or learning from a plan, especially when the user asks to write a plan, improve plan quality, review a plan, or identify planning lessons after execution."
 ---
 
 # Plan Quality
 
-Use this skill when creating, reviewing, refining, or learning from an implementation plan. The goal is not to force a full template; it is to make the plan clear enough that implementers, verifiers, and reviewers know what to do, what can run concurrently, and what success means. Every final plan must include a task-specific execution checklist.
+Use this skill when creating, reviewing, refining, or learning from an implementation plan.
 
-This skill is workflow-agnostic. Do not assume the user is using any specific delivery system, issue tracker, CI setup, or retrospective format.
+A good plan is the **shortest** document that tells an implementer what to change, what not to touch, and how to prove it works. Length and phase count are costs, not signals of quality.
 
-## Quick workflow
+This skill is workflow-agnostic. Do not assume any specific delivery system, issue tracker, CI setup, or retrospective format.
+
+## The default plan is one phase
+
+Start every plan as a single cohesive change with no phase identifiers. Add a second phase only when it passes the justification test in `references/PLAN_QUALITY_CHECKLIST.md`. Most tasks — including most multi-file refactors and feature additions — are one phase.
+
+Rough calibration:
+
+| Work | Expected phases |
+| --- | --- |
+| Any change one person can implement and verify in one sitting | 1 |
+| Independent workstreams that can genuinely run concurrently | 1 per stream + 1 integration |
+| Ordered migration/deploy with separately reversible steps | 1 per reversible step |
+
+If a plan exceeds 3 phases, treat that as a defect until each phase is individually justified.
+
+## Workflow
 
 1. Read the request, repo context, and any existing plan.
-2. Read `references/PLAN_QUALITY_CHECKLIST.md` as the baseline checklist.
-3. Identify the implementation units, dependencies, handoffs, and completion gates.
-4. Decide explicitly which units can run in parallel and which must stay sequential.
-5. Challenge the phase count: apply the phase justification test in the canonical checklist to every proposed phase and merge any phase that fails it. For multi-phase plans, record the passing criterion (a/b/c/d) on each phase so the decision is observable, not just performed.
-6. Apply the scope justification test in the canonical checklist to every plan. When the user explicitly asks to simplify, collapse, reduce, or trim it, actively strip speculative future-proofing, unrequested optional edge cases, and phases or sections that exist only to host them. Rebuild from the current accepted contract; do not remove explicitly requested or previously approved behavior. Note removals and ask rather than guess if approval is unclear.
-7. Add only checklist items that materially reduce ambiguity for this task.
-8. Keep the plan actionable: scope, evidence, execution order, and boundaries over generic prose.
-9. End the final plan with a task-specific execution checklist.
-10. If something is unknown, classify it instead of guessing: make decisions required before execution explicit blockers, and record non-blocking assumptions or follow-ups separately.
-11. After a plan is executed, reviewed, debugged, or abandoned, look for reusable planning lessons and provide improvement suggestions when helpful.
+2. Draft the plan as **one** change: scope, what must not change, done-when evidence.
+3. Read `references/PLAN_QUALITY_CHECKLIST.md` and pull in only the sections that reduce real ambiguity for this task. Apply its scope test to planned features, edge cases, and future-proofing; remove unrequested scope while preserving explicitly requested or approved behavior.
+4. Only if the work truly has separable units: split, and write one justification line per phase.
+5. Classify unknowns instead of guessing: decisions needed before execution are blockers; everything else is a recorded assumption or follow-up.
+6. End with a task-specific `Execution checklist`: one checkbox per phase (so usually one checkbox).
 
-## Applying the checklist
+## Output contract
 
-Use `references/PLAN_QUALITY_CHECKLIST.md` as the canonical checklist. Do not copy the whole checklist into every plan. Select only the items that matter for the current task.
+- Scope, out-of-scope, and observable done-when evidence are always present.
+- Phase identifiers, `Depends on`, `Produces`, handoffs, waves, and join gates appear **only** in genuinely multi-phase plans. Never write `Depends on: none` for a single-unit plan.
+- Each phase in a multi-phase plan carries a one-line justification naming criterion a/b/c/d from the checklist.
+- A `Parallelization` line is required only when there is more than one phase; state which phases run concurrently, or that execution is sequential and why.
+- The plan ends with an `Execution checklist` (or clearly equivalent heading), one checkbox per phase. Do not create checkboxes for individual work items inside a phase, and do not copy the canonical checklist into the plan.
 
-Common areas to consider:
-
-- Scope boundaries
-- Simplicity and accepted-scope discipline
-- Local prerequisites
-- Acceptance and verification path
-- Test data, state, and isolation
-- Validation and error expectations
-- Candidate completeness expectations
-- Phase dependencies, handoffs, and completion gates
-- Parallel execution safety and integration
-- Post-execution learning
-
-## Proportionality
-
-Scale the plan to the task using the proportionality guidance in the canonical checklist, including its phase and scope justification tests, anti-patterns, and merge self-check. Start from one cohesive change and default to the fewest phases that preserve independent execution units and distinct acceptance gates; the burden of proof is on each added phase, not on merging. Apply the same burden of proof to retained features, edge cases, and future-proofing. When the user asks to simplify, use the scope test's removal and disclosure rule while preserving the current accepted requirements; later explicit decisions supersede conflicting earlier draft text.
-
-## Final plan output contract
-
-Every final plan must satisfy these requirements:
-
-- If the work has multiple execution steps, give phases or tasks stable identifiers and state each unit's scope, dependencies, expected output, and completion evidence.
-- For each proposed phase, record which phase-justification criterion (a/b/c/d in the canonical checklist) it passes; a phase that passes none must be merged before the plan is finalized. A single-unit change needs no justification line.
-- Include an explicit `Parallelization` decision. Name the tasks or waves that can run concurrently and why, or state that execution should remain sequential and why.
-- Apply the dependency, handoff, parallel-safety, isolation, join, and post-integration criteria in checklist sections 7 and 8.
-- End with an `Execution checklist` section, or a clearly equivalent heading. Include one task-specific, observable checkbox per phase (or one checkbox for a cohesive single-unit change), using checklist section 9; do not create checkboxes for individual work items within a phase or copy the canonical checklist wholesale. This is required even for a short or single-phase plan.
-
-A concise single-unit shape is:
+Default shape — use this unless the justification test forces more:
 
 ```md
 ## Change
 - Scope: <one cohesive change and its boundaries>
+- Not changing: <surfaces that must stay untouched>
 - Done when: <observable evidence>
 
-## Parallelization
-- Sequential: <why splitting the change provides no benefit>.
+## Notes
+- <prerequisites, isolation, or validation expectations that are genuinely non-obvious>
 
 ## Execution checklist
 - [ ] Complete the change, including its verification and diff-boundary checks.
 ```
 
-A concise multi-phase shape is:
+Multi-phase shape — only when each phase passes the test. Keep it this terse:
 
 ```md
 ## Phases
 
 ### P1: <goal>
-- Depends on: none
-- Justification: <which of a/b/c/d holds>
+- Justification: (a) runs concurrently with P2
 - Changes: <files or surfaces>
-- Produces: <artifact or evidence consumed by P3>
+- Produces: <artifact P3 consumes>
 - Done when: <observable evidence>
 
 ### P2: <goal>
-- Depends on: none
-- Justification: <which of a/b/c/d holds>
+- Justification: (a) runs concurrently with P1
 - Changes: <independent files or surfaces>
-- Produces: <artifact or evidence consumed by P3>
 - Done when: <observable evidence>
 
 ### P3: <integration goal>
 - Depends on: P1, P2
-- Justification: <which of a/b/c/d holds>
-- Starts when: both prerequisite completion gates pass
-- Consumes: <P1 output> and <P2 output>
-- Changes: <integration surfaces>
+- Justification: (b) integration must pass a combined gate before release
 - Done when: <combined evidence>
 
 ## Parallelization
-- Wave 1: P1 and P2 can run in parallel because <independent boundaries>.
-- Wave 2: P3 starts after both; it remains blocked if either completion gate fails.
+- P1 and P2 in parallel (disjoint write boundaries); P3 after both gates pass.
 
 ## Execution checklist
-
-### Wave 1 — parallel
 - [ ] P1: complete the phase and satisfy its completion gate.
 - [ ] P2: complete the phase and satisfy its completion gate.
-
-### Wave 2 — after the P1/P2 join gate
-- [ ] P3: consume both outputs, complete integration, and run final verification.
+- [ ] P3: integrate both outputs and run final verification.
 ```
-
-Adapt the structure to the task; preserve the required decisions and checklist rather than the exact headings.
 
 ## Plan review output
 
-When reviewing a plan, respond with:
+When reviewing a plan, lead with what to cut:
 
-- Missing or ambiguous checklist items that matter now
-- Phases that fail the justification test and should be merged, with the merge target
-- Missing dependencies, handoffs, or completion gates
-- Unsafe or overlooked parallelization assumptions
-- Whether the execution checklist can be followed without inventing decisions
-- Suggested concise additions to the plan
-- Open questions that require user/product judgment
+- Phases that fail the justification test, and the merge target for each
+- Sections that are boilerplate rather than task-specific decisions
 - Scope that should be cut because it was never requested or approved, versus scope that must stay because it was explicitly requested or previously approved
-- Items safe to defer
+- Missing scope boundaries, done-when evidence, or real dependencies
+- Unsafe parallelization assumptions
+- Whether the execution checklist is followable without inventing decisions
+- Open questions needing user/product judgment, and items safe to defer
 
-Avoid expanding the plan with boilerplate. Prefer short, task-specific bullets that an implementer and verifier can execute.
+Prefer short, task-specific bullets. Do not add sections a competent implementer would not need.
 
 ## Post-execution improvement feedback
 
-When plan execution, implementation, review, debugging, or user feedback reveals a planning gap, include an optional section:
+When execution, review, debugging, or user feedback reveals a planning gap, add:
 
 ```md
 ## Plan quality improvement suggestions
 
 - Classification: shared-skill candidate | repo-specific guidance | task-specific note only
-- Checklist area: scope | prerequisites | verification | isolation | validation | completeness | phase execution | parallelization | integration | follow-up boundaries | post-execution learning
+- Checklist area: scope | prerequisites | verification | isolation | validation | completeness | phase split | parallelization | post-execution learning
 - Suggested addition: <concise checklist wording>
 - Why it generalizes: <one sentence>
-- Example future-plan wording: <optional>
 ```
 
-Only include suggestions that would have materially improved the plan. Do not invent process changes just to fill this section.
+Only include suggestions that would have materially improved this plan. Do not invent process changes to fill the section.
 
 ## Updating the checklist
 
-Do not assume the skill repository is writable. Many users may install this skill from a shared or read-only source.
+Do not assume the skill repository is writable; it is often installed from a shared source.
 
-If the user asks to improve the skill and the repo is writable, edit `references/PLAN_QUALITY_CHECKLIST.md` and keep `SKILL.md` focused on workflow instructions.
+If the user asks to improve the skill and the repo is writable, edit `references/PLAN_QUALITY_CHECKLIST.md` and keep `SKILL.md` focused on workflow. Otherwise offer PR-ready wording, an issue draft, or repo-specific guidance instead.
 
-If the repo is not writable or the user did not ask for edits, provide one of these instead:
-
-- PR-ready checklist wording
-- an issue/comment draft for the skill owner
-- a local patch the user can apply to their own clone or fork
-- repo-specific guidance for that project's docs or agent instructions
-
-Prefer improving the shared checklist only for lessons that are broadly reusable across repositories and workflows. Keep repo-specific rules in that repo's own docs, and keep one-off notes in the plan or retrospective.
+Prefer shared-checklist changes only for broadly reusable lessons. Keep repo-specific rules in that repo's docs and one-off notes in the plan. When adding to the checklist, consider what to delete: growth is the main failure mode of this skill.
