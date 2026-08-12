@@ -1,153 +1,129 @@
 # Plan Quality Checklist
 
-Use this lightweight checklist when writing, reviewing, or learning from an implementation plan. It is not a full plan template; include only the sections that materially reduce ambiguity for the task. However, every final plan must end with a task-specific execution checklist as described in section 9.
+A menu, not a template. Pull in only the items that reduce real ambiguity for the task at hand; leave the rest out without comment. The only always-required element is the final execution checklist (section 8).
 
-## Proportionality
+## Phase justification test
 
-- Start from one cohesive change; split into phases only when a proposed phase passes the phase justification test below. The burden of proof is on each added phase, not on merging.
-- For one cohesive change, do not assign a phase or task identifier, restate `Depends on: none`, or invent implicit prerequisites, outputs, handoffs, waves, or join gates.
-- For a single-unit plan, one short parallelization decision and one phase-level checklist item are usually enough.
-- Do not decompose work merely to create more phases or checkboxes; over-specifying work items can unnecessarily constrain implementation choices.
+Default to one phase. A second or later phase earns its place only if at least one holds:
 
-### Phase justification test
+- **(a) Concurrency** — it can genuinely execute at the same time as another unit, with disjoint write boundaries.
+- **(b) Gate** — its result must pass a distinct review or validation gate before downstream work continues, and failure would stop or replan that work.
+- **(c) Hard boundary** — different writer, worktree, owner, or an explicit handoff artifact.
+- **(d) Reversible step** — a separately verifiable, separately reversible step in an ordered migration or deploy sequence, with its own failure-and-recovery mode.
 
-A phase earns its place only if at least one holds:
+If none holds, the phase becomes implementation bullets inside an adjacent phase. The test does not apply to a single-unit plan; nothing needs justifying there.
 
-- (a) It can execute concurrently with another unit.
-- (b) Its result must pass a distinct review or validation gate before downstream work can continue, and failure would stop or replan that work.
-- (c) It crosses a hard boundary: different writer, worktree, owner, or an explicit handoff artifact.
-- (d) It is a separately verifiable, separately reversible step in an ordered migration or deploy sequence, with a distinct failure-and-recovery mode from its neighbors.
+Merge on sight:
 
-If none holds, merge the phase into an adjacent phase as implementation bullets. The test applies only when more than one phase is proposed; a single-unit change needs no justification. For multi-phase plans, record the passing criterion on each phase so the decision is observable.
+- Phase per file, layer, module, or component.
+- Phase per activity: implementation / testing / documentation split apart.
+- Phase per checklist section below.
+- Verification-only phases that amount to "run the tests".
+- Sequential same-writer phases with no gate or handoff between them.
+- "Setup" or "investigate" phases that produce no artifact another phase consumes.
 
-### Scope justification test
+Final question for each phase: *what is lost about execution order, independence, gating, or failure recovery if this merges into its neighbor?* If nothing, merge it.
+
+Also avoid over-specifying inside a phase. Enumerating every work item constrains implementation choices without improving the plan.
+
+## Scope justification test
 
 Apply this test to every feature, capability, edge case, configuration option, or extensibility hook in the plan, not just to phase count. An item earns a place in the plan only if at least one holds:
 
-- (a) The user explicitly requested it in this task or an earlier turn of the conversation.
-- (b) It is a previously approved requirement or feature in an authoritative spec, review, or accepted plan.
-- (c) It is required for correctness, safety, or a stated constraint of the chosen approach, rather than merely convenient or robust in general. For example, a generic retry/backoff layer is not required unless the chosen approach's contract specifies retry semantics.
-- (d) It is unavoidable given the approach already selected, such as a migration step required for the change to work at all.
+- **(a) Requested** — the user explicitly requested it in this task or an earlier turn of the conversation.
+- **(b) Approved** — it is a previously approved requirement or feature in an authoritative spec, review, or accepted plan.
+- **(c) Required** — it is necessary for correctness, safety, or a stated constraint of the chosen approach, rather than merely convenient or generally robust.
+- **(d) Unavoidable** — it is required by the approach already selected, such as a migration step needed for the change to work at all.
 
-If none holds, remove it or record it as deferred. When the user asks to simplify, reduce, or trim a plan, treat that request as a directive to strip speculative future-proofing, unrequested optional edge cases, and hypothetical abstractions; it is not permission to drop explicitly requested or previously approved behavior. An earlier draft counts as approved only when the user or another authoritative decision explicitly accepted it; repetition in a draft does not promote planner-added scope into a requirement. If a later explicit decision conflicts with earlier draft text, the later decision wins and the stale text must be removed or rewritten, not merged. If approval is unclear, ask rather than guessing, and disclose what was removed.
+If none holds, remove it or record it as deferred. When the user asks to simplify, reduce, or trim a plan, strip speculative future-proofing, unrequested optional edge cases, and hypothetical abstractions; do not drop explicitly requested or previously approved behavior. An earlier draft counts as approved only when the user or another authoritative decision explicitly accepted it. If a later explicit decision conflicts with earlier draft text, the later decision wins. If approval is unclear, ask rather than guessing, and disclose what was removed.
 
-Anti-patterns to remove on sight when simplifying:
+Remove on sight when simplifying:
 
 - Speculative extensibility hooks ("in case we need X later")
-- Optional or nice-to-have edge cases not in the acceptance criteria and not requested
-- Configuration flags, feature toggles, or abstraction layers added for hypothetical future use
-- Phases or sections that exist only to host the above; merge or delete them after applying the phase justification test
-
-Example: remove an interface added only for hypothetical future backends, but retain a specifically approved current backend behavior.
-
-Anti-patterns to merge on sight:
-
-- Phase per file, layer, or component.
-- Phase per activity type: implementation, testing, and documentation as separate phases.
-- Phase per checklist section.
-- Verification-only phases that are just "run the tests".
-- Sequential same-writer phases with no gate or handoff between them.
-
-Before finalizing, ask for each phase: what is lost if it merges into its neighbor? If nothing about execution order, independence, gating, or failure recovery is lost, merge it.
+- Optional edge cases not in acceptance criteria and not requested
+- Configuration flags, feature toggles, or abstractions for hypothetical future use
+- Phases or sections that exist only to host the above
 
 ## 1. Scope boundaries
 
-- What must change?
-- What must not change?
-- What compatibility or legacy behavior must be preserved?
-- What is explicitly follow-up or out of scope?
-- If the user asked to simplify, reduce, or trim the plan, does every remaining feature, edge case, and phase pass the scope justification test? List anything removed for that reason.
-- For cleanup, revert, or existing-review work, what is the intended review base or net diff target?
-- Are there protected files or surfaces that must stay zero-diff versus that base?
+- What must change; what must not change.
+- Compatibility or legacy behavior to preserve.
+- Explicit follow-up / out of scope.
+- If the user asked to simplify, reduce, or trim the plan, whether every remaining feature, edge case, and phase passes the scope test; list anything removed for that reason.
+- For cleanup, revert, or existing-review work: the intended review base or net diff target, and any surfaces that must stay zero-diff against it.
 
 ## 2. Local prerequisites
 
-Include when local verification/setup is non-trivial.
+Include only when local setup is non-trivial.
 
-- Required profiles, feature flags, runtime modes, or services
-- Required environment variables or local secret/dummy values
-- Required generated assets, dependency install, or build setup
-- Known local boot blockers or setup quirks
-- If docs/config advertise an endpoint, port, profile, or run command, how will the plan prove that runtime mode actually starts the advertised behavior?
+- Required profiles, feature flags, runtime modes, services.
+- Required environment variables or dummy secrets.
+- Required generated assets, dependency install, or build setup.
+- Known boot blockers or setup quirks.
+- If docs/config advertise an endpoint, port, profile, or run command, how the plan proves that mode actually starts.
 
-## 3. Acceptance and verification path
+## 3. Acceptance and verification
 
-- What observable behavior proves the change works?
-- What real consumer/user path should be exercised, not just internal state?
-- What focused tests or commands should run?
-- When is source-only or mock-only evidence sufficient, if ever?
-- For cleanup or preservation work, which surfaces need behavioral checks versus zero-diff preservation checks?
+- What observable behavior proves the change works.
+- Which real consumer/user path gets exercised, not just internal state.
+- Which focused tests or commands run.
+- Whether source-only or mock-only evidence is acceptable here.
+- For preservation work: which surfaces need behavioral checks versus zero-diff checks.
 
 ## 4. Test data, state, and isolation
 
-Use when the change involves scoped state, tenancy, sessions, caches, request context, feature flags, test IDs, or shared stores.
+Use when the change touches scoped state, tenancy, sessions, caches, request context, feature flags, or shared stores.
 
-- Which distinct scopes or identities should be tested?
-- Is an interleaved check needed to prove isolation?
-- Should missing/default/no-context behavior be verified?
-- What data must not leak across scopes?
+- Which distinct scopes or identities to test.
+- Whether an interleaved check is needed to prove isolation.
+- Whether missing/default/no-context behavior needs verifying.
+- What data must not leak across scopes.
 
 ## 5. Validation and error expectations
 
-Use when the change adds or modifies input validation, endpoint status codes, parsing, auth, or failure behavior.
+Use when the change touches input validation, status codes, parsing, auth, or failure behavior.
 
-- Which invalid inputs must be tested?
-- Expected status code, error shape, or message when important
-- If any non-2xx failure is acceptable, say that explicitly
-- Which validation polish is follow-up rather than required now?
+- Which invalid inputs must be tested.
+- Expected status code, error shape, or message when it matters.
+- Whether any non-2xx failure is acceptable.
+- Which validation polish is follow-up rather than required now.
 
-## 6. Candidate completeness expectations
+## 6. Completeness expectations
 
-- Expected source/config/script/doc files to change or be added
-- Expected tests to change or be added
-- Generated/local files that should not be committed
-- Any intentionally untracked files and why
+- Expected source/config/script/doc files to change or add.
+- Expected tests to change or add.
+- Generated or local files that must not be committed.
 
-## 7. Multi-phase execution and handoffs
+## 7. Multi-phase execution and parallelization
 
-Use when the work has more than one execution unit.
+Use only when the work genuinely has more than one justified unit.
 
-- Give each phase or task a stable identifier.
-- For each unit, state its goal, change surfaces, prerequisites, expected output, observable completion evidence, and which phase-justification criterion (a/b/c/d) it passes.
-- Which units can start immediately, and which are blocked by dependencies?
-- What exact artifact, decision, or evidence is handed to each dependent unit?
-- Where are the join points, integration step, and final end-to-end verification?
-- Which units form the critical path, and which downstream units must stop or be replanned if a prerequisite or completion gate fails?
+- Stable identifier per phase, plus its goal, change surfaces, prerequisites, produced artifact, done-when evidence, and justification criterion.
+- Which units start immediately and which are blocked.
+- The exact artifact, decision, or evidence handed to each dependent unit.
+- Join point, integration step, and final end-to-end verification.
+- Critical path, and which downstream units stop or get replanned if a gate fails.
+- Whether concurrency actually reduces elapsed time by more than the coordination and rework it creates.
 
-## 8. Parallelization decision
+Conceptually different work is not automatically parallel. Parallel work needs independent write boundaries or an explicit coordination strategy. When work must stay sequential — shared files, mutable state, generated artifacts, undecided contracts, ordered migrations — say so in one line and move on.
 
-Assess parallel execution explicitly for every plan, even when the conclusion is to run sequentially.
+## 8. Required final execution checklist
 
-- Which tasks or phases can run concurrently, and why are their boundaries independent?
-- Which tasks must remain sequential because of shared files, mutable state, generated artifacts, contract or schema decisions, or ordered migrations?
-- For parallel tasks, are file or surface ownership and environment or worktree isolation clear?
-- Must a shared interface, fixture, or design decision be completed before parallel work begins?
-- What is the integration or merge order, who or what owns the join, and what combined validation runs afterward?
-- Does the proposed concurrency reduce elapsed time without creating coordination or rework greater than the benefit?
+Every final plan ends with an `Execution checklist` section or clear equivalent, even a one-phase plan.
 
-Do not label tasks parallel merely because they are conceptually different. Parallel work needs independent write boundaries or an explicit coordination strategy.
+- One task-specific, observable checkbox per justified phase. A single-unit plan gets exactly one checkbox.
+- Never a checkbox per work item, and never a copy of this canonical checklist.
+- Order checkboxes by dependency and reference phase identifiers when they exist.
+- Keep implementation detail, evidence, verification, cleanup, and docs expectations inside the phase definition; the checkbox summarizes them.
+- Represent parallel waves and their integration point, or state that execution is sequential.
+- Unresolved decisions needed before execution become explicit blockers, not implementer guesswork; non-blocking assumptions are recorded separately.
 
-## 9. Required final execution checklist
+## 9. Post-execution learning
 
-Every final plan must end with an `Execution checklist` section, or a clearly equivalent heading. The checklist is required even for a short or single-phase plan.
+After a plan is executed, reviewed, debugged, or abandoned, convert each lesson into one of:
 
-- Use one task-specific, actionable checkbox per phase rather than copying this canonical checklist or creating a checkbox for every work item.
-- Each phase checkbox must correspond to a phase that passed the justification test in `## Proportionality`; a phase that fails the test is merged into an adjacent phase as implementation bullets and gets no separate checkbox.
-- For a cohesive change without named phases, use one checkbox covering the change.
-- Order phase checkboxes by execution dependency and reference phase identifiers when present.
-- Keep implementation details, observable evidence, verification, cleanup, and documentation expectations in each phase definition; summarize them in the phase checkbox without decomposing them into additional checklist items.
-- Describe prerequisite decisions, handoffs, and join gates in the relevant phase definitions or wave headings. Create another checkbox only when they constitute a distinct phase.
-- Represent parallel waves and their integration point, or explicitly record that execution is sequential.
-- Turn unresolved decisions required before execution into explicit blockers instead of leaving implementers to guess; record non-blocking assumptions or follow-ups separately.
+- a shared-skill candidate, if broadly reusable across repos and workflows;
+- repo-specific guidance, if it belongs in that repository's docs or agent instructions;
+- a task-specific note only, if it would not generalize.
 
-## 10. Post-execution learning
-
-After a plan is executed, reviewed, debugged, or abandoned, identify plan-quality lessons without assuming any specific workflow tool.
-
-Convert each lesson into one of:
-
-- a shared-skill candidate, if broadly reusable across repos and workflows
-- repo-specific guidance, if it belongs in that repository's docs or agent instructions
-- a task-specific note only, if it would not generalize
-
-For shared-skill candidates, provide PR-ready wording instead of silently editing the checklist unless the user explicitly asks and the skill repo is writable.
+For shared-skill candidates, provide PR-ready wording rather than silently editing this checklist, unless the user asked and the repo is writable. Prefer replacing existing wording over appending to it.
