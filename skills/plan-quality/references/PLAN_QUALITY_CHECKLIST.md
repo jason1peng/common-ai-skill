@@ -67,7 +67,9 @@ Include only when local setup is non-trivial.
 - What observable behavior proves the change works.
 - Which real consumer/user path gets exercised, not just internal state.
 - Which focused tests or commands run.
-- Whether source-only or mock-only evidence is acceptable here.
+- Prefer live entry-point and representative-input evidence, durable read-back, and expected failure signals over source-only or mock-only evidence.
+- For external contracts: identify contract-visible operations/entry points; request/response required fields, types, and nullability; status, error, and compatibility behavior.
+- For durable-state shape: identify the owner table/entity; columns, types, nullability, and defaults; keys/constraints; and writer/reader.
 - For preservation work: which surfaces need behavioral checks versus zero-diff checks.
 
 ## 4. Test data, state, and isolation
@@ -90,18 +92,19 @@ Use when the change touches input validation, status codes, parsing, auth, or fa
 
 ## 6. Completeness expectations
 
-- Expected source/config/script/doc files to change or add.
+- Expected source/config/script/doc files to change or add, including relevant repository instructions and actual consumers.
 - Expected tests to change or add.
+- Classify data changes as schema-only, data migration/backfill, or seeding.
 - Generated or local files that must not be committed.
 
 ## 7. Multi-phase execution and parallelization
 
 Use only when the work genuinely has more than one justified unit.
 
-- Stable identifier per phase, plus its goal, change surfaces, prerequisites, produced artifact, done-when evidence, and justification criterion.
+- Stable identifier per phase, plus its goal, change surfaces, prerequisites, justification criterion, and observable done-when evidence that defines its completion gate; only (c) phases also pin the base ref/revision, writer/owner, and ownership handoff record.
 - Which units start immediately and which are blocked.
 - The exact artifact, decision, or evidence handed to each dependent unit.
-- Join point, integration step, and final end-to-end verification.
+- Join point: name the integration step, prerequisite completion gates, and combined final end-to-end evidence.
 - Critical path, and which downstream units stop or get replanned if a gate fails.
 - Whether concurrency actually reduces elapsed time by more than the coordination and rework it creates.
 
@@ -116,7 +119,7 @@ Every final plan ends with an `Execution checklist` section or clear equivalent,
 - Order checkboxes by dependency and reference phase identifiers when they exist.
 - Keep implementation detail, evidence, verification, cleanup, and docs expectations inside the phase definition; the checkbox summarizes them.
 - Represent parallel waves and their integration point, or state that execution is sequential.
-- Unresolved decisions needed before execution become explicit blockers, not implementer guesswork; non-blocking assumptions are recorded separately.
+- Unresolved decisions needed before execution, including repository-instruction conflicts, become explicit blockers, not implementer guesswork; non-blocking assumptions are recorded separately.
 
 ## 9. Post-execution learning
 

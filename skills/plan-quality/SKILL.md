@@ -29,7 +29,7 @@ If a plan exceeds 3 phases, treat that as a defect until each phase is individua
 
 1. Read the request, repo context, and any existing plan.
 2. Draft the plan as **one** change: scope, what must not change, done-when evidence.
-3. Read `references/PLAN_QUALITY_CHECKLIST.md` and pull in only the sections that reduce real ambiguity for this task. Apply its scope test to planned features, edge cases, and future-proofing; remove unrequested scope while preserving explicitly requested or approved behavior.
+3. Read `references/PLAN_QUALITY_CHECKLIST.md` and pull in only the sections that reduce real ambiguity for this task. Only when a plan adds or alters an external contract or durable data shape, require explicit contract/state-shape, data-classification, and read-back evidence. Always apply its scope test to planned features, edge cases, and future-proofing, removing unrequested scope while preserving explicitly requested or approved behavior.
 4. Only if the work truly has separable units: split, and write one justification line per phase.
 5. Classify unknowns instead of guessing: decisions needed before execution are blockers; everything else is a recorded assumption or follow-up.
 6. End with a task-specific `Execution checklist`: one checkbox per phase (so usually one checkbox).
@@ -97,6 +97,7 @@ When reviewing a plan, lead with what to cut:
 - Missing scope boundaries, done-when evidence, or real dependencies
 - Unsafe parallelization assumptions
 - Whether the execution checklist is followable without inventing decisions
+- For plans adding or altering an external contract or durable data shape: check implicit contracts, durable-state shape, data classification, and read-back evidence
 - Open questions needing user/product judgment, and items safe to defer
 
 Prefer short, task-specific bullets. Do not add sections a competent implementer would not need.
