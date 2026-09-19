@@ -5,7 +5,9 @@ description: "Keeps implementation plans small and executable: one cohesive chan
 
 # Plan Quality
 
-Use this skill when creating, reviewing, refining, or learning from an implementation plan.
+## Overview
+
+Use this skill to turn a request into a small, executable implementation plan. It defines scope and non-scope, identifies meaningful prerequisites and dependencies, specifies observable verification, and ends with a task-specific execution checklist. It supports creating, reviewing, refining, and learning from plans.
 
 A good plan is the **shortest** document that tells an implementer what to change, what not to touch, and how to prove it works. Length and phase count are costs, not signals of quality.
 
