@@ -38,6 +38,7 @@ If a plan exceeds 3 phases, treat that as a defect until each phase is individua
 
 ## Output contract
 
+- Every generated plan starts with a concise `## Overview` section before `## Change` or `## Phases`. Keep it to 1–3 sentences summarizing what the plan is about, why it matters, and the intended outcome; keep detailed scope, prerequisites, and verification in the sections that follow.
 - Scope, out-of-scope, and observable done-when evidence are always present.
 - Phase identifiers, `Depends on`, `Produces`, handoffs, waves, and join gates appear **only** in genuinely multi-phase plans. Never write `Depends on: none` for a single-unit plan.
 - Each phase in a multi-phase plan carries a one-line justification naming criterion a/b/c/d from the checklist.
@@ -47,6 +48,9 @@ If a plan exceeds 3 phases, treat that as a defect until each phase is individua
 Default shape — use this unless the justification test forces more:
 
 ```md
+## Overview
+<1–3 sentence summary of what the plan changes, why, and the intended outcome>
+
 ## Change
 - Scope: <one cohesive change and its boundaries>
 - Not changing: <surfaces that must stay untouched>
@@ -62,6 +66,9 @@ Default shape — use this unless the justification test forces more:
 Multi-phase shape — only when each phase passes the test. Keep it this terse:
 
 ```md
+## Overview
+<1–3 sentence summary of what the plan changes, why, and the intended outcome>
+
 ## Phases
 
 ### P1: <goal>
@@ -96,7 +103,7 @@ When reviewing a plan, lead with what to cut:
 - Phases that fail the justification test, and the merge target for each
 - Sections that are boilerplate rather than task-specific decisions
 - Scope that should be cut because it was never requested or approved, versus scope that must stay because it was explicitly requested or previously approved
-- Missing scope boundaries, done-when evidence, or real dependencies
+- Missing overview, scope boundaries, done-when evidence, or real dependencies
 - Unsafe parallelization assumptions
 - Whether the execution checklist is followable without inventing decisions
 - For plans adding or altering an external contract or durable data shape: check implicit contracts, durable-state shape, data classification, and read-back evidence
