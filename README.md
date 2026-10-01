@@ -7,6 +7,7 @@ Shared source-of-truth repository for reusable AI/pi skills.
 - `skills/repo-documentation-harness/` - reusable documentation harness skill for creating `docs/index.md`, `docs/principles.md`, and root AI instruction links.
 - `skills/plan-quality/` - plan creation/review guidance with a required execution checklist, phase dependencies, parallelization decisions, verification, and scope boundaries.
 - `skills/worktree-branch-cleanup/` - read-only audit of git worktrees and local branches producing a DELETE / KEEP / REVIEW report with evidence and suggested cleanup commands.
+- `skills/meeting-transcript-to-slack/` - transcript-first meeting summaries with a user review/approval gate before Slack posting.
 
 ## Local pi Setup
 
