@@ -1,6 +1,6 @@
 # Plan Quality Checklist
 
-A menu, not a template. Pull in only the items that reduce real ambiguity for the task at hand; leave the rest out without comment. The only always-required element is the final execution checklist (section 8).
+A menu, not a template. Pull in only the items that reduce real ambiguity for the task at hand; leave the rest out without comment. The only always-required element is the final execution checklist (section 8). How the plan reads, including plain wording and its diagram, is covered by `PLAN_WRITING_GUIDE.md`.
 
 ## Phase justification test
 
@@ -67,7 +67,7 @@ Include only when local setup is non-trivial.
 - What observable behavior proves the change works.
 - Which real consumer/user path gets exercised, not just internal state.
 - Which focused tests or commands run.
-- Prefer live entry-point and representative-input evidence, durable read-back, and expected failure signals over source-only or mock-only evidence.
+- Prefer running the real entry point with realistic input, reading saved data back, and seeing the expected failures over source-only or mock-only evidence.
 - For external contracts: identify contract-visible operations/entry points; request/response required fields, types, and nullability; status, error, and compatibility behavior.
 - For durable-state shape: identify the owner table/entity; columns, types, nullability, and defaults; keys/constraints; and writer/reader.
 - For preservation work: which surfaces need behavioral checks versus zero-diff checks.
@@ -114,10 +114,10 @@ Conceptually different work is not automatically parallel. Parallel work needs i
 
 Every final plan ends with an `Execution checklist` section or clear equivalent, even a one-phase plan.
 
-- One task-specific, observable checkbox per justified phase. A single-unit plan gets exactly one checkbox.
+- One task-specific, observable checkbox per justified phase that states its outcome in one short plain line. A single-unit plan gets exactly one checkbox.
 - Never a checkbox per work item, and never a copy of this canonical checklist.
 - Order checkboxes by dependency and reference phase identifiers when they exist.
-- Keep implementation detail, evidence, verification, cleanup, and docs expectations inside the phase definition; the checkbox summarizes them.
+- Keep implementation detail, evidence, verification, cleanup, and docs expectations inside the phase definition; the checkbox names the outcome and does not repeat them.
 - Represent parallel waves and their integration point, or state that execution is sequential.
 - Unresolved decisions needed before execution, including repository-instruction conflicts, become explicit blockers, not implementer guesswork; non-blocking assumptions are recorded separately.
 
