@@ -41,7 +41,7 @@ If a plan exceeds 3 phases, treat that as a defect until each phase is individua
 ## Output contract
 
 - Every generated plan starts with a concise `## Overview` section before `## Change` or `## Phases`. Its text is 1–3 plain sentences covering the problem or goal, what changes, and the intended outcome; the diagram, when there is one, comes right after. Keep detailed scope, prerequisites, and verification in the sections that follow.
-- Write for a reader who knows the product but not this code, following `references/PLAN_WRITING_GUIDE.md`: everyday words, one idea per bullet, any needed technical term explained once, and implementer details such as file paths and commands after the Change section.
+- Write for an engineer who knows the product but not this code, following `references/PLAN_WRITING_GUIDE.md`: short sentences, one idea per bullet, project-specific terms explained once, and implementer details after the plain explanation.
 - Include one small Mermaid diagram in the Overview unless the change is trivial, such as a one-line fix. When phases run in parallel, also draw the phase order under `## Parallelization`. Diagrams illustrate the text and never add scope.
 - Scope, out-of-scope, and observable done-when evidence are always present.
 - Phase identifiers, `Depends on`, `Produces`, handoffs, waves, and join gates appear **only** in genuinely multi-phase plans. Never write `Depends on: none` for a single-unit plan.
