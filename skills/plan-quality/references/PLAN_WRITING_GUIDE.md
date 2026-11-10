@@ -17,7 +17,7 @@ Write the Overview, the diagram, and the Change section for the approver. Put fi
 - Describe a concrete case instead of a category: "if the export command crashes after writing its file", not "on post-export rendering failure".
 - Avoid slash chains such as `auth/permission/usage` and long comma lists. Name the few items at real risk, or group the rest in plain words.
 - For what must not change, start with the user's view ("links, logins, and error messages work as today"), then name the specific items at risk.
-- Readability suffers most from dense, abstract process wording. Replace it with the concrete thing:
+- When an abstract process term hides the actual change, name the concrete thing instead. Common cases:
 
 | Instead of | Write |
 | --- | --- |
@@ -39,7 +39,7 @@ Pick the diagram that fits the change:
 
 | If the plan… | Draw | Mermaid type |
 | --- | --- | --- |
-| adds steps or branches to a process, such as a retry, a fallback, or an error path | the flow, with the new steps highlighted | `flowchart` |
+| adds steps or branches to a process, such as a retry, a fallback, or an error path | the flow, highlighting new steps where helpful | `flowchart` |
 | changes how parts call each other | the calls, in order | `sequenceDiagram` |
 | moves code or responsibility between parts | before and after, side by side | `flowchart` with two `subgraph` blocks |
 | changes the states something moves through | the states and the moves between them | `stateDiagram-v2` |
