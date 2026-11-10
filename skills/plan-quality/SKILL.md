@@ -1,15 +1,15 @@
 ---
 name: plan-quality
-description: "Keeps implementation plans small and executable: one cohesive change by default, extra phases only when they earn it, plus a task-specific execution checklist and guidance for scope, prerequisites, verification, isolation, validation, and post-execution learning. Use when creating, reviewing, refining, retrofitting, or learning from a plan, especially when the user asks to write a plan, improve plan quality, review a plan, or identify planning lessons after execution."
+description: "Keeps implementation plans small, executable, and easy to read: one cohesive change by default, extra phases only when they earn it, plain words with a small diagram, plus a task-specific execution checklist and guidance for scope, prerequisites, verification, isolation, validation, and post-execution learning. Use when creating, reviewing, refining, retrofitting, or learning from a plan, especially when the user asks to write a plan, improve plan quality or readability, review a plan, or identify planning lessons after execution."
 ---
 
 # Plan Quality
 
 ## Overview
 
-Use this skill to turn a request into a small, executable implementation plan. It defines scope and non-scope, identifies meaningful prerequisites and dependencies, specifies observable verification, and ends with a task-specific execution checklist. It supports creating, reviewing, refining, and learning from plans.
+Use this skill to turn a request into a small, executable implementation plan that people can read quickly. It defines scope and non-scope, identifies meaningful prerequisites and dependencies, specifies observable verification, explains the change in plain words with a small diagram, and ends with a task-specific execution checklist. It supports creating, reviewing, refining, and learning from plans.
 
-A good plan is the **shortest** document that tells an implementer what to change, what not to touch, and how to prove it works. Length and phase count are costs, not signals of quality.
+A good plan is the **shortest** document that tells an implementer what to change, what not to touch, and how to prove it works, in words the person approving it can follow without reading the code. Length, phase count, and jargon are costs, not signals of quality.
 
 This skill is workflow-agnostic. Do not assume any specific delivery system, issue tracker, CI setup, or retrospective format.
 
@@ -30,71 +30,92 @@ If a plan exceeds 3 phases, treat that as a defect until each phase is individua
 ## Workflow
 
 1. Read the request, repo context, and any existing plan.
-2. Draft the plan as **one** change: scope, what must not change, done-when evidence.
+2. Read `references/PLAN_WRITING_GUIDE.md`, then draft the plan as **one** change in plain words: scope, what must not change, done-when evidence.
 3. Read `references/PLAN_QUALITY_CHECKLIST.md` and pull in only the sections that reduce real ambiguity for this task. Only when a plan adds or alters an external contract or durable data shape, require explicit contract/state-shape, data-classification, and read-back evidence. Always apply its scope test to planned features, edge cases, and future-proofing, removing unrequested scope while preserving explicitly requested or approved behavior.
 4. Only if the work truly has separable units: split, and write one justification line per phase.
 5. Classify unknowns instead of guessing: decisions needed before execution are blockers; everything else is a recorded assumption or follow-up.
-6. End with a task-specific `Execution checklist`: one checkbox per phase (so usually one checkbox).
+6. Add one small diagram to the Overview unless the change is trivial; when phases run in parallel, also draw the phase order.
+7. End with a task-specific `Execution checklist`: one short checkbox per phase (so usually one checkbox).
+8. Reread the Overview, diagram, and Change section as the approver would, and rewrite anything they could not follow without opening the code.
 
 ## Output contract
 
-- Every generated plan starts with a concise `## Overview` section before `## Change` or `## Phases`. Keep it to 1–3 sentences summarizing what the plan is about, why it matters, and the intended outcome; keep detailed scope, prerequisites, and verification in the sections that follow.
+- Every generated plan starts with a concise `## Overview` section before `## Change` or `## Phases`. Its text is 1–3 plain sentences covering the problem or goal, what changes, and the intended outcome; the diagram, when there is one, comes right after. Keep detailed scope, prerequisites, and verification in the sections that follow.
+- Write for an engineer who knows the product but not this code, following `references/PLAN_WRITING_GUIDE.md`: short sentences, one idea per bullet, project-specific terms explained once, and implementer details after the plain explanation.
+- Include one small Mermaid diagram in the Overview unless the change is trivial, such as a one-line fix. When phases run in parallel, also draw the phase order under `## Parallelization`. Diagrams illustrate the text and never add scope.
 - Scope, out-of-scope, and observable done-when evidence are always present.
 - Phase identifiers, `Depends on`, `Produces`, handoffs, waves, and join gates appear **only** in genuinely multi-phase plans. Never write `Depends on: none` for a single-unit plan.
-- Each phase in a multi-phase plan carries a one-line justification naming criterion a/b/c/d from the checklist.
+- Each phase in a multi-phase plan carries a one-line `Why separate:` reason that states, in plain words, which checklist phase test (a–d) it meets, for example "runs in parallel with P2; they share no files". A bare letter is not a reason.
 - A `Parallelization` line is required only when there is more than one phase; state which phases run concurrently, or that execution is sequential and why.
-- The plan ends with an `Execution checklist` (or clearly equivalent heading), one checkbox per phase. Do not create checkboxes for individual work items inside a phase, and do not copy the canonical checklist into the plan.
+- The plan ends with an `Execution checklist` (or clearly equivalent heading), one checkbox per phase. Each checkbox states the phase's outcome in one short plain line; the details stay in Done when. Do not create checkboxes for individual work items inside a phase, and do not copy the canonical checklist into the plan.
 
 Default shape — use this unless the justification test forces more:
 
-```md
+````md
 ## Overview
-<1–3 sentence summary of what the plan changes, why, and the intended outcome>
+<1–3 plain sentences: the problem or goal, what changes, and the outcome>
+
+```mermaid
+flowchart LR
+    A[Step that stays the same] --> B[New or changed step] --> C[Result the reader cares about]
+    classDef changed fill:#fff4cc,stroke:#d97706,color:#111
+    class B changed
+```
+
+_Highlighted: <what is new or changed>._
 
 ## Change
-- Scope: <one cohesive change and its boundaries>
-- Not changing: <surfaces that must stay untouched>
-- Done when: <observable evidence>
+- Scope: <the one change, in plain words, and where it stops>
+- Not changing: <what must stay exactly as it is, user-visible behavior first>
+- Done when: <what to run or look at that proves it works>
 
-## Notes
-- <prerequisites, isolation, or validation expectations that are genuinely non-obvious>
+## Implementation notes
+- <files, entry points, commands, prerequisites, or checks the implementer needs that are not obvious>
 
 ## Execution checklist
-- [ ] Complete the change, including its verification and diff-boundary checks.
-```
+- [ ] <the outcome in one short line>, and the Done-when checks pass.
+````
 
 Multi-phase shape — only when each phase passes the test. Keep it this terse:
 
-```md
+````md
 ## Overview
-<1–3 sentence summary of what the plan changes, why, and the intended outcome>
+<1–3 plain sentences: the problem or goal, what changes, and the outcome>
+
+<diagram of the change, as in the default shape>
 
 ## Phases
 
 ### P1: <goal>
-- Justification: (a) runs concurrently with P2
-- Changes: <files or surfaces>
-- Produces: <artifact P3 consumes>
-- Done when: <observable evidence>
+- Why separate: runs in parallel with P2; they share no files.
+- Changes: <files or areas>
+- Produces: <the file, result, or decision P3 uses>
+- Done when: <what proves P1 works>
 
 ### P2: <goal>
-- Justification: (a) runs concurrently with P1
-- Changes: <independent files or surfaces>
-- Done when: <observable evidence>
+- Why separate: runs in parallel with P1; they share no files.
+- Changes: <other files or areas>
+- Done when: <what proves P2 works>
 
 ### P3: <integration goal>
 - Depends on: P1, P2
-- Justification: (b) integration must pass a combined gate before release
-- Done when: <combined evidence>
+- Why separate: the combined result must pass its own review before release.
+- Done when: <what proves the combined change works>
 
 ## Parallelization
-- P1 and P2 in parallel (disjoint write boundaries); P3 after both gates pass.
+- P1 and P2 run in parallel because they share no files; P3 starts after both pass their Done-when checks.
+
+```mermaid
+flowchart LR
+    P1["P1: short goal"] --> P3["P3: combine and run final checks"]
+    P2["P2: short goal"] --> P3
+```
 
 ## Execution checklist
-- [ ] P1: complete the phase and satisfy its completion gate.
-- [ ] P2: complete the phase and satisfy its completion gate.
-- [ ] P3: integrate both outputs and run final verification.
-```
+- [ ] P1: <outcome in one short line>.
+- [ ] P2: <outcome in one short line>.
+- [ ] P3: <combined outcome>, and the final checks pass.
+````
 
 ## Plan review output
 
@@ -107,9 +128,10 @@ When reviewing a plan, lead with what to cut:
 - Unsafe parallelization assumptions
 - Whether the execution checklist is followable without inventing decisions
 - For plans adding or altering an external contract or durable data shape: check implicit contracts, durable-state shape, data classification, and read-back evidence
+- Readability problems the approver would trip on: jargon, run-on bullets or checkboxes, implementer detail ahead of the summary, or a missing or confusing diagram (see `references/PLAN_WRITING_GUIDE.md`)
 - Open questions needing user/product judgment, and items safe to defer
 
-Prefer short, task-specific bullets. Do not add sections a competent implementer would not need.
+Prefer short, task-specific bullets. Do not add sections the approver or a competent implementer would not need.
 
 ## Post-execution improvement feedback
 
@@ -119,17 +141,17 @@ When execution, review, debugging, or user feedback reveals a planning gap, add:
 ## Plan quality improvement suggestions
 
 - Classification: shared-skill candidate | repo-specific guidance | task-specific note only
-- Checklist area: scope | prerequisites | verification | isolation | validation | completeness | phase split | parallelization | post-execution learning
+- Checklist area: scope | prerequisites | verification | isolation | validation | completeness | phase split | parallelization | readability | post-execution learning
 - Suggested addition: <concise checklist wording>
 - Why it generalizes: <one sentence>
 ```
 
 Only include suggestions that would have materially improved this plan. Do not invent process changes to fill the section.
 
-## Updating the checklist
+## Updating the skill
 
 Do not assume the skill repository is writable; it is often installed from a shared source.
 
-If the user asks to improve the skill and the repo is writable, edit `references/PLAN_QUALITY_CHECKLIST.md` and keep `SKILL.md` focused on workflow. Otherwise offer PR-ready wording, an issue draft, or repo-specific guidance instead.
+If the user asks to improve the skill and the repo is writable, edit the matching reference, `references/PLAN_QUALITY_CHECKLIST.md` for what a plan covers or `references/PLAN_WRITING_GUIDE.md` for how it reads, and keep `SKILL.md` focused on workflow. Otherwise offer PR-ready wording, an issue draft, or repo-specific guidance instead.
 
-Prefer shared-checklist changes only for broadly reusable lessons. Keep repo-specific rules in that repo's docs and one-off notes in the plan. When adding to the checklist, consider what to delete: growth is the main failure mode of this skill.
+Prefer shared-reference changes only for broadly reusable lessons. Keep repo-specific rules in that repo's docs and one-off notes in the plan. When adding to either reference, consider what to delete: growth is the main failure mode of this skill.
